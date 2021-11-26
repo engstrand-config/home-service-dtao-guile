@@ -3,10 +3,16 @@
                #:use-module (guix utils)
                #:use-module (guix packages)
                #:use-module (guix git-download)
+               #:use-module (guix build-system gnu)
+               #:use-module ((guix licenses) #:prefix license:)
                ;; TODO: Remove this dependency for wlroots-0.13.0?
                #:use-module (dwl-guile packages)
                #:use-module (gnu packages wm)
                #:use-module (gnu packages guile)
+               #:use-module (gnu packages groff)
+               #:use-module (gnu packages xdisorg)
+               #:use-module (gnu packages fontutils)
+               #:use-module (gnu packages pkg-config)
                #:use-module (gnu packages build-tools))
 
 (define-public
@@ -58,4 +64,4 @@
     (synopsis "dtao - dzen for Wayland")
     (description
       "dtao is a stdin-based general-purpose bar for Wayland,
-      modeled after the venerable dzen2"))
+      modeled after the venerable dzen2")))
