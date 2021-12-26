@@ -26,15 +26,15 @@
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/engstrand-config/dtao-guile.git")
-               (commit "f54eed89ebe8f4d31b57fc8aa002ec590cdcd617")))
+               (commit "72c22ea83192086c15b5c3ea1e6bd6c212723fef")))
         (sha256
-          (base32 "0s3r4m54azmqk7srax4i79ds9qjjwvryfaag6jsxhhvn5y4mqjf9"))))
+          (base32 "1p8n4v3f91sg9hnr3yrapmr3hyzmyhcsclg6nnyzwj1za0jrplkk"))))
     (build-system gnu-build-system)
     (native-inputs
       `(("pkg-config" ,pkg-config)))
     (inputs
       `(("guile-3.0" ,guile-3.0)
-        ("wlroots-0.13.0" ,wlroots-0.13.0)
+        ("wlroots-0.14.0" ,wlroots-0.14.0)
         ("fcft" ,fcft)
         ("pixman" ,pixman)
         ("groff" ,groff)
