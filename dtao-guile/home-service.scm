@@ -63,12 +63,14 @@
 (define (home-dtao-guile-profile-service config)
   (list (home-dtao-guile-configuration-package config)))
 
+;; Find unique module dependencies for each block in the configuration.
 (define (get-block-dependencies dtao)
   (let ((blocks (append (dtao-config-title-blocks dtao)
                         (dtao-config-sub-blocks dtao))))
-    (fold (lambda (block acc) (append (dtao-block-modules block) acc))
-          '()
-          blocks)))
+    (delete-duplicates (fold (lambda (block acc)
+                               (append (dtao-block-modules block) acc))
+                             '()
+                             blocks))))
 
 ;; Generate configuration file based on config in home.
 (define (home-dtao-guile-files-service config)
