@@ -1,6 +1,7 @@
 (define-module (dtao-guile configuration)
                #:use-module (gnu services configuration)
                #:use-module (dtao-guile utils)
+               #:use-module (dtao-guile configuration blocks)
                #:export (
                          dtao-config
                          <dtao-config>

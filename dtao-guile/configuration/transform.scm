@@ -9,6 +9,13 @@
                          dtao-config->alist
                          configuration->alist))
 
+; Converts an arrange procedure into a scheme expression.
+(define (callback->exp proc)
+  (if
+    (not proc)
+    proc
+    `(. (lambda (state) ,proc))))
+
 (define*
   (configuration->alist
     #:key
@@ -31,16 +38,25 @@
       '()
       (record-type-fields type))))
 
+(define (transform-block field value source)
+  (match
+    field
+    ('render (callback->exp value))
+    ('click (callback->exp value))
+    (_ value)))
+
 (define (transform-config field value source)
   (match
     field
-    ('blocks (map (lambda (block) (dtao-block->alist block source)) value))
+    ('title-blocks (map (lambda (block) (dtao-block->alist block source)) value))
+    ('sub-blocks (map (lambda (block) (dtao-block->alist block source)) value))
     (_ value)))
 
 ;; TODO: Add value transformer
 (define (dtao-block->alist block source)
   (configuration->alist
     #:type <dtao-block>
+    #:transform-value transform-block
     #:config block
     #:source source))
 

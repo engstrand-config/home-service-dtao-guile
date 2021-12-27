@@ -9,7 +9,6 @@
                #:use-module (gnu services configuration)
                #:use-module (dtao-guile utils)
                #:use-module (dtao-guile packages)
-               #:use-module (dtao-guile home-service)
                #:use-module (dtao-guile configuration)
                #:use-module (dtao-guile configuration blocks)
                #:use-module (dtao-guile configuration transform)
@@ -43,7 +42,11 @@
                             dtao-block
                             <dtao-block>
                             dtao-block?
-                            dtao-block-render))
+                            dtao-block-render
+                            dtao-block-click
+                            dtao-block-modules
+                            dtao-block-interval
+                            dtao-block-signal))
 
 ;; Home service configuration for dtao-guile.
 (define-configuration
@@ -60,13 +63,28 @@
 (define (home-dtao-guile-profile-service config)
   (list (home-dtao-guile-configuration-package config)))
 
+(define (get-block-dependencies dtao)
+  (let ((blocks (append (dtao-config-title-blocks dtao)
+                        (dtao-config-sub-blocks dtao))))
+    (fold (lambda (block acc) (append (dtao-block-modules block) acc))
+          '()
+          blocks)))
+
 ;; Generate configuration file based on config in home.
 (define (home-dtao-guile-files-service config)
-  `(("config/dtao-guile/config.scm"
-     ,(scheme-file
-        "dtao-config.scm"
-        #~(define config
-            `(#$@(dtao-config->alist (home-dtao-guile-configuration-config config))))))))
+  (let ((dtao (dtao-config->alist (home-dtao-guile-configuration-config config)))
+        (modules (get-block-dependencies (home-dtao-guile-configuration-config config))))
+    `(("config/dtao-guile/config.scm"
+       ,(with-imported-modules
+         modules
+         (scheme-file
+          "dtao-config.scm"
+          ;; Not sure how to conditonally add (use-modules ...)
+          (if (> (length modules) 0)
+              #~(begin
+                  (use-modules #$@modules)
+                  (define config `(#$@dtao)))
+            #~(define config `(#$@dtao)))))))))
 
 ;; Add shepherd serivce for starting dtao-guile.
 ;; TODO: Remove dependency on dwl-guile?
