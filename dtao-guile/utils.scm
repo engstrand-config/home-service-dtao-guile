@@ -7,6 +7,7 @@
                          list-of-blocks?
                          bar-position?
                          maybe-number?
+                         maybe-string?
                          remove-question-mark))
 
 (define (conditional-list lst)
@@ -23,6 +24,9 @@
 
 (define (maybe-number? x)
   (or (number? x) (eq? x #f)))
+
+(define (maybe-string? x)
+  (or (string? x) (eq? x #f)))
 
 ; Removes the '?' from the end of a string.
 ; This is used when transforming a config into an alist.

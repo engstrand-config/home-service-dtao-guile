@@ -61,6 +61,12 @@ It will dynamically receive updated colors via the dscm wayland protocol.")
   (adjust-width?
     (boolean #f)
     "Adjusts the total width of the bar to the width of its contents.")
+  (delimiter
+    (maybe-string #f)
+    "Single character delimiter between each block, both in title and sub-window.")
+  (block-spacing
+    (maybe-number #f)
+    "Additional spacing on each side of the delimiter between each block (in pixels).")
   (title-align
     (symbol 'ALIGN-LEFT)
     "Title window alignment. Available values are @code{ALIGN-LEFT},
