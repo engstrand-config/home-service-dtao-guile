@@ -5,19 +5,12 @@
                #:export (
                          conditional-list
                          list-of-blocks?
-                         bar-position?
                          maybe-number?
                          maybe-string?
                          remove-question-mark))
 
 (define (conditional-list lst)
   (filter (lambda (x) (not (unspecified? x))) lst))
-
-(define (bar-position? pos)
-  (match pos
-         ("top" #t)
-         ("bottom" #t)
-         (_ #f)))
 
 (define (list-of-blocks? lst)
   (every dtao-block? lst))

@@ -23,8 +23,9 @@
                             dtao-config
                             <dtao-config>
                             dtao-config?
-                            dtao-config-title-blocks
-                            dtao-config-sub-blocks
+                            dtao-config-left-blocks
+                            dtao-config-right-blocks
+                            dtao-config-center-blocks
                             dtao-config-height
                             dtao-config-font
                             dtao-config-use-dwl-guile-colorscheme?
@@ -36,8 +37,6 @@
                             dtao-config-bottom?
                             dtao-config-adjust-width?
                             dtao-config-layer
-                            dtao-config-title-align
-                            dtao-config-sub-align
 
                             dtao-block
                             <dtao-block>
@@ -65,8 +64,9 @@
 
 ;; Find unique module dependencies for each block in the configuration.
 (define (get-block-dependencies dtao)
-  (let ((blocks (append (dtao-config-title-blocks dtao)
-                        (dtao-config-sub-blocks dtao))))
+  (let ((blocks (append (dtao-config-left-blocks dtao)
+                        (dtao-config-center-blocks dtao)
+                        (dtao-config-right-blocks dtao))))
     (delete-duplicates (fold (lambda (block acc)
                                (append (dtao-block-modules block) acc))
                              '()
@@ -74,8 +74,9 @@
 
 ;; Generate configuration file based on config in home.
 (define (home-dtao-guile-files-service config)
-  (let ((dtao (dtao-config->alist (home-dtao-guile-configuration-config config)))
-        (modules (get-block-dependencies (home-dtao-guile-configuration-config config))))
+  (let* ((user-config (home-dtao-guile-configuration-config config))
+         (dtao (dtao-config->alist user-config))
+         (modules (get-block-dependencies user-config)))
     `(("config/dtao-guile/config.scm"
        ,(with-imported-modules
          modules

@@ -6,8 +6,9 @@
                          dtao-config
                          <dtao-config>
                          dtao-config?
-                         dtao-config-title-blocks
-                         dtao-config-sub-blocks
+                         dtao-config-left-blocks
+                         dtao-config-center-blocks
+                         dtao-config-right-blocks
                          dtao-config-height
                          dtao-config-font
                          dtao-config-use-dwl-guile-colorscheme?
@@ -18,18 +19,19 @@
                          dtao-config-exclusive?
                          dtao-config-bottom?
                          dtao-config-adjust-width?
-                         dtao-config-layer
-                         dtao-config-title-align
-                         dtao-config-sub-align))
+                         dtao-config-layer))
 
 (define-configuration
   dtao-config
-  (title-blocks
+  (left-blocks
     (list-of-blocks '())
-    "A list of blocks that should be rendered in the title window.")
-  (sub-blocks
+    "A list of blocks that should be rendered on the left side of the bar.")
+  (center-blocks
     (list-of-blocks '())
-    "A list of blocks that should be rendered in the sub-window.")
+    "A list of blocks that should be rendered in the center of the bar.")
+  (right-blocks
+    (list-of-blocks '())
+    "A list of blocks that should be rendered on the right side of the bar.")
   (height
     (maybe-number #f)
     "The height of the bar. Set to #f for automatic height.")
@@ -58,6 +60,7 @@ It will dynamically receive updated colors via the dscm wayland protocol.")
   (bottom?
     (boolean #f)
     "Render the bar at the bottom of the screen.")
+  ;; TODO: Does this option even work anymore?
   (adjust-width?
     (boolean #f)
     "Adjusts the total width of the bar to the width of its contents.")
@@ -67,14 +70,6 @@ It will dynamically receive updated colors via the dscm wayland protocol.")
   (block-spacing
     (maybe-number #f)
     "Additional spacing on each side of the delimiter between each block (in pixels).")
-  (title-align
-    (symbol 'ALIGN-LEFT)
-    "Title window alignment. Available values are @code{ALIGN-LEFT},
-@code{ALIGN-RIGHT}, and @code{ALIGN-CENTER}.")
-  (sub-align
-    (symbol 'ALIGN-RIGHT)
-    "Sub-window alignment. Available values are @code{ALIGN-LEFT},
-@code{ALIGN-RIGHT}, and @code{ALIGN-CENTER}.")
   (layer
     (symbol 'LAYER-TOP)
     "Layer to render the bar in. Available values are: @code{LAYER-TOP},
