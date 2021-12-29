@@ -9,12 +9,19 @@
                          dtao-config->alist
                          configuration->alist))
 
-; Converts an arrange procedure into a scheme expression.
-(define (callback->exp proc)
+;; Convert a render handler expression into a procedure sexp
+(define (render->exp proc)
   (if
     (not proc)
     proc
-    `(. (lambda (state) ,proc))))
+    `(. (lambda (monitor) ,proc))))
+
+;; Convert a click handler expression into a procedure sexp
+(define (click->exp proc)
+  (if
+    (not proc)
+    proc
+    `(. (lambda (button) ,proc))))
 
 (define*
   (configuration->alist
@@ -45,8 +52,8 @@
 (define (transform-block field value source)
   (match
     field
-    ('render (callback->exp value))
-    ('click (callback->exp value))
+    ('render (render->exp value))
+    ('click (click->exp value))
     (_ value)))
 
 (define (transform-config field value source)
