@@ -10,6 +10,7 @@
             dtao-block-click
             dtao-block-modules
             dtao-block-signal
+            dtao-block-events?
             dtao-block-interval))
 
 ;; TODO: Unsure how to verify if it is an expression.
@@ -47,6 +48,10 @@
   (signal
     (maybe-signal #f)
     "Signal used to trigger an update of a block. Must be between RTMIN and RTMAX, or #f.")
+  (events?
+    (boolean #f)
+    "Listen for events from dwl-guile, e.g. updated title, tag, layout, etc.
+Forces an instant re-render of the block, regardless of the value of @code{(interval)}.")
   (interval
     (number 0)
     "Update interval of the block in seconds. An interval <= 0 will result in the block
