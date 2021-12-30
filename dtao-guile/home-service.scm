@@ -18,6 +18,7 @@
             home-dtao-guile-configuration?
             <home-dtao-guile-configuration>
             home-dtao-guile-configuration-package
+            home-dtao-guile-configuration-auto-start?
             home-dtao-guile-configuration-config)
   #:re-export (
                dtao-config
@@ -53,6 +54,9 @@
   (package
    (package dtao-guile)
    "The dtao package to use.")
+  (auto-start?
+   (boolean #t)
+   "If dtao-guile should auto-start on login.")
   (config
    (dtao-config (dtao-config))
    "Custom dtao-guile configuration. Replaces command line arguments.")
@@ -88,7 +92,7 @@
     (documentation "Run dtao-guile.")
     (requirement '(dwl-guile))
     (provision '(dtao-guile))
-    (auto-start? #t)
+    (auto-start? (home-dtao-guile-configuration-auto-start? config))
     (respawn? #t)
     (start
      (let ((config-dir (string-append (getenv "HOME") "/.config/dtao-guile")))
