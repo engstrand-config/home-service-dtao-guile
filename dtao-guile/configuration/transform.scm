@@ -14,7 +14,7 @@
   (if
    (not proc)
    proc
-   `(. (lambda (monitor) ,proc))))
+   `(. (lambda () ,proc))))
 
 ;; Convert a click handler expression into a procedure sexp
 (define (click->exp proc)
