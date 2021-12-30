@@ -15,7 +15,7 @@
 ;; TODO: Unsure how to verify if it is an expression.
 (define (block-renderer? proc)
   (or (eq? proc #f))
-      (not (eq? proc #t)))
+  (not (eq? proc #t)))
 
 (define (block-click-callback? value)
   (or (eq? value #f)
@@ -31,20 +31,20 @@
 (define-configuration
   dtao-block
   (render
-    (block-renderer)
-    "Block rendering procedure returning a string.")
+   (block-renderer)
+   "Block rendering procedure returning a string.")
   (click
-    (block-click-callback #f)
-    "Block click callback procedure.")
+   (block-click-callback #f)
+   "Block click callback procedure.")
   (signal
-    (maybe-signal #f)
-    "Signal used to trigger an update of a block. Must be between RTMIN and RTMAX, or #f.")
+   (maybe-signal #f)
+   "Signal used to trigger an update of a block. Must be between RTMIN and RTMAX, or #f.")
   (events?
-    (boolean #f)
-    "Listen for events from dwl-guile, e.g. updated title, tag, layout, etc.
+   (boolean #f)
+   "Listen for events from dwl-guile, e.g. updated title, tag, layout, etc.
 Forces an instant re-render of the block, regardless of the value of @code{(interval)}.")
   (interval
-    (number 0)
-    "Update interval of the block in seconds. An interval <= 0 will result in the block
+   (number 0)
+   "Update interval of the block in seconds. An interval <= 0 will result in the block
 never updating automatically. A signal can still be used to trigger an update.")
   (no-serialization))

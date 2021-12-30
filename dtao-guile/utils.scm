@@ -1,14 +1,14 @@
 (define-module (dtao-guile utils)
-               #:use-module (srfi srfi-1)
-               #:use-module (ice-9 match)
-               #:use-module (dtao-guile configuration blocks)
-               #:export (
-                         conditional-list
-                         list-of-blocks?
-                         list-of-modules?
-                         maybe-number?
-                         maybe-string?
-                         remove-question-mark))
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
+  #:use-module (dtao-guile configuration blocks)
+  #:export (
+            conditional-list
+            list-of-blocks?
+            list-of-modules?
+            maybe-number?
+            maybe-string?
+            remove-question-mark))
 
 (define (conditional-list lst)
   (filter (lambda (x) (not (unspecified? x))) lst))
@@ -22,8 +22,8 @@
 (define (maybe-string? x)
   (or (string? x) (eq? x #f)))
 
-; Removes the '?' from the end of a string.
-; This is used when transforming a config into an alist.
+;; Removes the '?' from the end of a string.
+;; This is used when transforming a config into an alist.
 (define (remove-question-mark str)
   (string-trim-right str #\?))
 
