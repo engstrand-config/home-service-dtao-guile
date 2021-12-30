@@ -8,7 +8,6 @@
             <dtao-block>
             dtao-block-render
             dtao-block-click
-            dtao-block-modules
             dtao-block-signal
             dtao-block-events?
             dtao-block-interval))
@@ -28,11 +27,6 @@
       (and (<= sig SIGRTMAX)
            (>= sig RTMIN))))
 
-(define (list-of-modules? lst)
-  (every (lambda (modlst)
-           (every symbol? modlst))
-         lst))
-
 ;; TODO: Document argument type for render and click procedures.
 (define-configuration
   dtao-block
@@ -42,9 +36,6 @@
   (click
     (block-click-callback #f)
     "Block click callback procedure.")
-  (modules
-    (list-of-modules '())
-    "A list of Guile module dependencies needed to run @code{click} or @code{render}.")
   (signal
     (maybe-signal #f)
     "Signal used to trigger an update of a block. Must be between RTMIN and RTMAX, or #f.")

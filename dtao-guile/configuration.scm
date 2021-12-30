@@ -9,6 +9,7 @@
                          dtao-config-left-blocks
                          dtao-config-center-blocks
                          dtao-config-right-blocks
+                         dtao-config-modules
                          dtao-config-height
                          dtao-config-font
                          dtao-config-use-dwl-guile-colorscheme?
@@ -32,6 +33,9 @@
   (right-blocks
     (list-of-blocks '())
     "A list of blocks that should be rendered on the right side of the bar.")
+  (modules
+    (list-of-modules '())
+    "A list of Guile module dependencies needed to run the blocks. Available to all blocks.")
   (height
     (maybe-number #f)
     "The height of the bar. Set to #f for automatic height.")

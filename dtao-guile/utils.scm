@@ -5,6 +5,7 @@
                #:export (
                          conditional-list
                          list-of-blocks?
+                         list-of-modules?
                          maybe-number?
                          maybe-string?
                          remove-question-mark))
@@ -25,3 +26,8 @@
 ; This is used when transforming a config into an alist.
 (define (remove-question-mark str)
   (string-trim-right str #\?))
+
+(define (list-of-modules? lst)
+  (every (lambda (modlst)
+           (every symbol? modlst))
+         lst))

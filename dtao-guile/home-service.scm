@@ -26,6 +26,7 @@
                             dtao-config-left-blocks
                             dtao-config-right-blocks
                             dtao-config-center-blocks
+                            dtao-config-modules
                             dtao-config-height
                             dtao-config-font
                             dtao-config-use-dwl-guile-colorscheme?
@@ -43,7 +44,6 @@
                             dtao-block?
                             dtao-block-render
                             dtao-block-click
-                            dtao-block-modules
                             dtao-block-interval
                             dtao-block-signal))
 
@@ -62,21 +62,11 @@
 (define (home-dtao-guile-profile-service config)
   (list (home-dtao-guile-configuration-package config)))
 
-;; Find unique module dependencies for each block in the configuration.
-(define (get-block-dependencies dtao)
-  (let ((blocks (append (dtao-config-left-blocks dtao)
-                        (dtao-config-center-blocks dtao)
-                        (dtao-config-right-blocks dtao))))
-    (delete-duplicates (fold (lambda (block acc)
-                               (append (dtao-block-modules block) acc))
-                             '()
-                             blocks))))
-
 ;; Generate configuration file based on config in home.
 (define (home-dtao-guile-files-service config)
   (let* ((user-config (home-dtao-guile-configuration-config config))
          (dtao (dtao-config->alist user-config))
-         (modules (get-block-dependencies user-config)))
+         (modules (dtao-config-modules user-config)))
     `(("config/dtao-guile/config.scm"
        ,(with-imported-modules
          modules
