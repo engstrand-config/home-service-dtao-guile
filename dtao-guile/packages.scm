@@ -24,9 +24,9 @@
      (method git-fetch)
      (uri (git-reference
            (url "https://github.com/engstrand-config/dtao-guile.git")
-           (commit "72c22ea83192086c15b5c3ea1e6bd6c212723fef")))
+           (commit "ca87ba76d985cf86bac3d140850a04d1342b9336")))
      (sha256
-      (base32 "1p8n4v3f91sg9hnr3yrapmr3hyzmyhcsclg6nnyzwj1za0jrplkk"))))
+      (base32 "1ybnyf8ky25z8yxg72qzmd0m6yc6xg9cpyqgyzdmr105js14qfxs"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("pkg-config" ,pkg-config)))
