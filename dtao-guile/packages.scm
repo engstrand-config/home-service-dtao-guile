@@ -5,8 +5,6 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
-  ;; TODO: Remove this dependency for wlroots-0.13.0?
-  #:use-module (dwl-guile packages)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages groff)
@@ -34,7 +32,7 @@
     `(("pkg-config" ,pkg-config)))
    (inputs
     `(("guile-3.0" ,guile-3.0)
-      ("wlroots-0.14.0" ,wlroots-0.14.0)
+      ("wlroots" ,wlroots)
       ("fcft" ,fcft)
       ("pixman" ,pixman)
       ("groff" ,groff)
