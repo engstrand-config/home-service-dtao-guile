@@ -91,7 +91,7 @@ It will dynamically receive updated colors via the dscm wayland protocol.")
    (maybe-number #f)
    "Additional spacing on each side of the delimiter between each block (in pixels).")
   (layer
-   (symbol 'LAYER-TOP)
+   (symbol 'LAYER-BOTTOM)
    "Layer to render the bar in. Available values are: @code{LAYER-TOP},
 @code{LAYER-BOTTOM}, @code{LAYER-OVERLAY}, and @code{LAYER-BACKGROUND}.")
   (no-serialization))
