@@ -37,12 +37,17 @@
                dtao-config-border-px
                dtao-config-exclusive?
                dtao-config-bottom?
+               dtao-config-padding-top
+               dtao-config-padding-bottom
+               dtao-config-padding-left
+               dtao-config-padding-right
                dtao-config-adjust-width?
                dtao-config-layer
 
                dtao-block
                <dtao-block>
                dtao-block?
+               dtao-block-events?
                dtao-block-render
                dtao-block-click
                dtao-block-interval

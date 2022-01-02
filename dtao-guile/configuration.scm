@@ -19,6 +19,10 @@
                          dtao-config-border-px
                          dtao-config-exclusive?
                          dtao-config-bottom?
+                         dtao-config-padding-top
+                         dtao-config-padding-bottom
+                         dtao-config-padding-left
+                         dtao-config-padding-right
                          dtao-config-adjust-width?
                          dtao-config-layer))
 
@@ -64,6 +68,18 @@ It will dynamically receive updated colors via the dscm wayland protocol.")
   (bottom?
    (boolean #f)
    "Render the bar at the bottom of the screen.")
+  (padding-top
+   (number 2)
+   "Padding on the top of the bar. Blocks may be drawn in this area")
+  (padding-bottom
+   (number 2)
+   "Padding on the bottom of the bar. Blocks may be drawn in this area.")
+  (padding-left
+   (number 8)
+   "Padding on the left side of the bar. Nothing will be drawn in this area.")
+  (padding-right
+   (number 8)
+   "Padding on the right side of the bar. Nothing will be drawn in this area.")
   ;; TODO: Does this option even work anymore?
   (adjust-width?
    (boolean #f)
