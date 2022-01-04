@@ -44,7 +44,7 @@
    (maybe-number #f)
    "The height of the bar. Set to #f for automatic height.")
   (font
-   (string "JetBrains Mono:style=bold:size=12")
+   (string "monospace:style=bold:size=12")
    "The font to use in the statusbar, e.g. 'JetBrains Mono:style=bold:size=12'")
   (use-dwl-guile-colorscheme?
    (boolean #f)
