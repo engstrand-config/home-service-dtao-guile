@@ -1,5 +1,5 @@
 * A =dtao-guile= home service for GNU Guix
-This repository contains a [[https://guix.gnu.org/manual/devel/en/html_node/Home-Configuration.html][Guix Home]] service for [[https://github.com/engstrand-config/dwl-guile][ =dtao-guile= ]] --- a simple, hackable [[https://www.gnu.org/software/guile/][GNU Guile]]-configurable status bar (mainly for [[https://github.com/engstrand-config/dwl-guile][ =dwl-guile= ]]).
+This repository contains a [[https://guix.gnu.org/manual/devel/en/html_node/Home-Configuration.html][Guix Home]] service for [[https://github.com/engstrand-config/dtao-guile][ =dtao-guile= ]] --- a simple, hackable [[https://www.gnu.org/software/guile/][GNU Guile]]-configurable status bar (mainly for [[https://github.com/engstrand-config/dwl-guile][ =dwl-guile= ]]).
 You can install our home service with the help of the Guix channel below.
 
 #+begin_quote
@@ -30,6 +30,7 @@ Add the channel to your =~/.config/guix/channels.scm=:
 Afterwards, run =guix pull=.
 
 ** Usage
+
 *** Home service configuration
 Enable =home-service-dtao-guile= by adding it to your list of home services.
 #+begin_src scheme
@@ -48,9 +49,9 @@ Enable =home-service-dtao-guile= by adding it to your list of home services.
            (dtao-config ...))))
 #+end_src
 
-** Shepherd service
+*** Shepherd service
 A Shepherd service wil be added after you have enabled the dtao-guile home service and reconfigured the system.
-This allows you to control the dtao-guile executable with the =herd= command, for example:
+This allows you to control the =dtao-guile= executable with the =herd= command, for example:
 #+begin_src
 herd start dtao-guile
 herd stop dtao-guile
@@ -59,7 +60,7 @@ herd restart dtao-guile
 
 Logs are available at =$XDG_LOG_HOME/dtao-guile.log= (logs will be saved to your home directory if =$XDG_LOG_HOME= is not set).
 
-** Configuring =dtao-guile=
+*** Configuring =dtao-guile=
 
 All configuration is done in the =dtao-config= record of the =config= field of the home service configuration.
 
@@ -95,7 +96,7 @@ All configuration is done in the =dtao-config= record of the =config= field of t
  (modules '()))
 #+end_src
 
-** Defining blocks
+*** Defining blocks
 
 Status bar blocks are defined through =dtao-block= records with the following structure:
 
@@ -118,7 +119,7 @@ For example, a block that shows the date and time, that is updated every second:
  (render `(strftime "%A, %d %b (w.%V) %T" (localtime (current-time)))))
 #+end_src
 
-** =dwl= integration
+*** =dwl= integration
 
 =dtao-guile= has Guile bindings for capturing =dwl= state and events, such as retrieving the title of the currently selected client:
 #+begin_src scheme
@@ -162,12 +163,13 @@ In the picture below (rendered by the above code snippet), tag 1 is the currentl
 Tag 2 has one or more active clients assigned to it, which means that =dtao:active-tag?= equals =#t=.
 Tags 3 to 9 are not selected and have no windows assigned to them.
 The current layout --- shown as =[]== --- is the default =dwl= tiling layout.
+
 #+NAME: fig:tags-layout
 #+CAPTION: =dwl= tags and layout indicators in the =dtao-guile= statusbar.
 [[./images/tags.png]]
 
-** Guile bindings
-All Guile bindings (i.e. the =dtao:...= procedures) are available [[https://github.com/engstrand-config/dtao-guile/blob/a1b2baefa8542e018787009ddb0254fdcfb9d413/dscm-bindings.h#L173-L216][here]].
+*** C bindings
+All =libguile= bindings in the =dtao-guile= C source (i.e. the =dtao:...= procedures) are available [[https://github.com/engstrand-config/dtao-guile/blob/a1b2baefa8542e018787009ddb0254fdcfb9d413/dscm-bindings.h#L173-L216][here]].
 
 ** Example configuration
 You can find a working example in [[https://github.com/engstrand-config/guix-dotfiles/blob/main/engstrand/features/statusbar.scm][our GNU Guix configuration]], in the [[https://github.com/engstrand-config/guix-dotfiles/blob/main/engstrand/features/statusbar.scm][ =engstrand/features/statusbar.scm= ]] file.
