@@ -1,0 +1,173 @@
+* A =dtao-guile= home service for GNU Guix
+This repository contains a [[https://guix.gnu.org/manual/devel/en/html_node/Home-Configuration.html][Guix Home]] service for [[https://github.com/engstrand-config/dwl-guile][ =dtao-guile= ]] --- a simple, hackable [[https://www.gnu.org/software/guile/][GNU Guile]]-configurable status bar (mainly for [[https://github.com/engstrand-config/dwl-guile][ =dwl-guile= ]]).
+You can install our home service with the help of the Guix channel below.
+
+#+begin_quote
+=dtao-guile= is still under development, so proceed with caution!
+#+end_quote
+
+** Features
+This Guix Home service will:
+- install =dtao-guile=
+- provide a Shepherd service
+- configure =dtao-guile= to your liking
+
+** Guix channel
+We provide =home-service-dtao-guile= in a Guix channel.
+
+Add the channel to your =~/.config/guix/channels.scm=:
+#+begin_src scheme
+(channel
+  (name 'home-service-dtao-guile)
+  (url "https://github.com/engstrand-config/home-service-dtao-guile")
+  (branch "main")
+  (introduction
+    (make-channel-introduction
+      "64d0b70c547095ddc840dd07424b9a46ccc2e64e"
+      (openpgp-fingerprint
+        "C9BE B8A0 4458 FDDF 1268 1B39 029D 8EB7 7E18 D68C"))))
+#+end_src
+Afterwards, run =guix pull=.
+
+** Usage
+*** Home service configuration
+Enable =home-service-dtao-guile= by adding it to your list of home services.
+#+begin_src scheme
+;; Import the service
+(use-modules (dtao-guile home-service))
+
+;; Create and add the dtao-guile home service to your home configuration.
+(service home-dwl-guile-service-type
+         (home-dwl-guile-configuration
+          ;; Optionally use a custom dtao-guile package.
+          (package my-custom-dtao-guile)
+          ;; Start dtao-guile on login, defaults to true.
+          (auto-start? #t)
+          ;; Create a custom configuration for dtao.
+          (config
+           (dtao-config ...))))
+#+end_src
+
+** Shepherd service
+A Shepherd service wil be added after you have enabled the dtao-guile home service and reconfigured the system.
+This allows you to control the dtao-guile executable with the =herd= command, for example:
+#+begin_src
+herd start dtao-guile
+herd stop dtao-guile
+herd restart dtao-guile
+#+end_src
+
+Logs are available at =$XDG_LOG_HOME/dtao-guile.log= (logs will be saved to your home directory if =$XDG_LOG_HOME= is not set).
+
+** Configuring =dtao-guile=
+
+All configuration is done in the =dtao-config= record of the =config= field of the home service configuration.
+
+#+begin_src scheme
+(dtao-config
+ ;; A font string in fcft format.
+ (font "monospace:style=bold:size=12")
+ ;; Read `root', `border' and `text' colors from dwl-guile.
+ (use-dwl-guile-colorscheme? #t)
+ (background-color "111111AA")
+ (border-color "333333FF")
+ (foreground-color "FFFFFFFF")
+ (padding-left 8)
+ (padding-right 8)
+ (padding-top 2)
+ (padding-bottom 2)
+ ;; Request an exclusive zone for the bar to prevent overlapping.
+ (exclusive? #t)
+ ;; Layer to render the bar in (LAYER-TOP, LAYER-BOTTOM, LAYER-OVERLAY, LAYER-BACKGROUND).
+ (layer 'LAYER-BOTTOM)
+ ;; Render the bar at the bottom of the screen.
+ (bottom? #f)
+ ;; Height of the bar in pixels. Set to #f for automatic height based on font size.
+ (height #f)
+ ;; Delimiter string of arbitrary length inserted between blocks.
+ (delimiter #f)
+ ;; Additional spacing on each side of the delimiter string.
+ (block-spacing 0)
+ (left-blocks '())
+ (center-blocks '())
+ (right-blocks '())
+ ;; List of Guile module dependencies needed to run your blocks.
+ (modules '()))
+#+end_src
+
+** Defining blocks
+
+Status bar blocks are defined through =dtao-block= records with the following structure:
+
+#+begin_src scheme
+(dtao-block
+ (render `(...))
+ (click `(...))
+ ;; Signal (RTMIN to RTMAX) to trigger a re-render.
+ (signal #f)
+ ;; Listen for dwl-guile events like updated title, tag layout etc. upon which to instantly re-rerender the block.
+ (events? #f)
+ ;; Update interval time in seconds. The block will not update automatically if the interval <= 0.
+ (interval 0))
+#+end_src
+
+For example, a block that shows the date and time, that is updated every second:
+#+begin_src scheme
+(dtao-block
+ (interval 1)
+ (render `(strftime "%A, %d %b (w.%V) %T" (localtime (current-time)))))
+#+end_src
+
+** =dwl= integration
+
+=dtao-guile= has Guile bindings for capturing =dwl= state and events, such as retrieving the title of the currently selected client:
+#+begin_src scheme
+(dtao-block
+ (events? #t) ;; Must be enabled to correctly re-render upon event/state change
+ (render `(dtao:title)))
+#+end_src
+
+The following snippet defines the behavior and colors of the tag and layout indicators in =dwl=:
+#+begin_src scheme
+(define %tags-and-layout
+  (append
+   (map
+    (lambda (tag)
+      (let ((str (string-append "^p(8)" (number->string tag) "^p(8)"))
+            (index (- tag 1)))
+      (dtao-block
+       (interval 0)
+       (events? #t)
+       (click `(match button
+                 (0 (dtao:view ,index))))
+       (render `(cond
+                 ((dtao:selected-tag? ,index)
+                  ,(string-append "^bg(#ffcc00)^fg(#191919)" str "^fg()^bg()"))
+                 ((dtao:urgent-tag? ,index)
+                  ,(string-append "^bg(#ff0000)^fg(#ffffff)" str "^fg()^bg()"))
+                 ((dtao:active-tag? ,index)
+                  ,(string-append "^bg(#323232)^fg(#ffffff)" str "^fg()^bg()"))
+                 (else ,str))))))
+    (iota 9 1))
+   (list
+    (dtao-block
+     (events? #t)
+     (click `(dtao:next-layout))
+     (render `(string-append "^p(4)" (dtao:get-layout)))))))
+#+end_src
+
+As the =(lambda (tag) ...)= and =(iota 9 1)= expressions suggest, there are 9 tags in the bar, each with an individual =dtao-block= record.
+
+In the picture below (rendered by the above code snippet), tag 1 is the currently selected tag, so =dtao:selected-tag?= equals =#t= for its block.
+Tag 2 has one or more active clients assigned to it, which means that =dtao:active-tag?= equals =#t=.
+Tags 3 to 9 are not selected and have no windows assigned to them.
+The current layout --- shown as =[]== --- is the default =dwl= tiling layout.
+#+NAME: fig:tags-layout
+#+CAPTION: =dwl= tags and layout indicators in the =dtao-guile= statusbar.
+[[./images/tags.png]]
+
+** Guile bindings
+All Guile bindings (i.e. the =dtao:...= procedures) are available [[https://github.com/engstrand-config/dtao-guile/blob/a1b2baefa8542e018787009ddb0254fdcfb9d413/dscm-bindings.h#L173-L216][here]].
+
+** Example configuration
+You can find a working example in [[https://github.com/engstrand-config/guix-dotfiles/blob/main/engstrand/features/statusbar.scm][our GNU Guix configuration]], in the [[https://github.com/engstrand-config/guix-dotfiles/blob/main/engstrand/features/statusbar.scm][ =engstrand/features/statusbar.scm= ]] file.
