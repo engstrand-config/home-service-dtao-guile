@@ -1,42 +1,48 @@
 (define-module (dtao-guile configuration)
-               #:use-module (gnu services configuration)
-               #:use-module (dtao-guile utils)
-               #:use-module (dtao-guile configuration blocks)
-               #:export (
-                         dtao-config
-                         <dtao-config>
-                         dtao-config?
-                         dtao-config-left-blocks
-                         dtao-config-center-blocks
-                         dtao-config-right-blocks
-                         dtao-config-modules
-                         dtao-config-height
-                         dtao-config-font
-                         dtao-config-use-dwl-guile-colorscheme?
-                         dtao-config-background-color
-                         dtao-config-foreground-color
-                         dtao-config-border-color
-                         dtao-config-border-px
-                         dtao-config-exclusive?
-                         dtao-config-bottom?
-                         dtao-config-padding-top
-                         dtao-config-padding-bottom
-                         dtao-config-padding-left
-                         dtao-config-padding-right
-                         dtao-config-adjust-width?
-                         dtao-config-layer))
+	       #:use-module (gnu services configuration)
+	       #:use-module (dtao-guile utils)
+	       #:use-module (dtao-guile configuration blocks)
+	       #:export (
+			 dtao-config
+			 <dtao-config>
+			 dtao-config?
+			 dtao-config-blocks
+			 dtao-config-left-blocks
+			 dtao-config-center-blocks
+			 dtao-config-right-blocks
+			 dtao-config-modules
+			 dtao-config-height
+			 dtao-config-font
+			 dtao-config-use-dwl-guile-colorscheme?
+			 dtao-config-background-color
+			 dtao-config-foreground-color
+			 dtao-config-border-color
+			 dtao-config-border-px
+			 dtao-config-exclusive?
+			 dtao-config-bottom?
+			 dtao-config-padding-top
+			 dtao-config-padding-bottom
+			 dtao-config-padding-left
+			 dtao-config-padding-right
+			 dtao-config-adjust-width?
+			 dtao-config-layer))
 
 (define-configuration
   dtao-config
+  (blocks
+   (list-of-blocks '())
+   "A list of blocks that should be rendered in the statusbar.
+Will be automatically placed in the correct left, right, or center block list
+based on the 'position' field. Primarily used by service extensions.")
   (left-blocks
-    (list-of-blocks '())
-    "A list of blocks that should be rendered on the left side of the bar.")
+   (list-of-blocks '())
+   "A list of blocks that should be rendered in the left side of the statusbar.")
   (center-blocks
    (list-of-blocks '())
-   "A list of blocks that should be rendered in the center of the bar.")
+   "A list of blocks that should be rendered in the center of the statusbar.")
   (right-blocks
    (list-of-blocks '())
-   "A list of blocks that should be rendered on the right side of the bar.")
+   "A list of blocks that should be rendered in the right side of the statusbar.")
   (modules
    (list-of-modules '())
    "A list of Guile module dependencies needed to run the blocks. Available to all blocks.")

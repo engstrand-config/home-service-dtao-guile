@@ -3,14 +3,15 @@
   #:use-module (gnu services configuration)
   #:use-module (dtao-guile utils)
   #:export (
-            dtao-block
-            dtao-block?
-            <dtao-block>
-            dtao-block-render
-            dtao-block-click
-            dtao-block-signal
-            dtao-block-events?
-            dtao-block-interval))
+	    dtao-block
+	    dtao-block?
+	    <dtao-block>
+	    dtao-block-render
+	    dtao-block-click
+	    dtao-block-position
+	    dtao-block-signal
+	    dtao-block-events?
+	    dtao-block-interval))
 
 ;; TODO: Unsure how to verify if it is an expression.
 (define (block-renderer? proc)
@@ -20,12 +21,16 @@
 (define (block-click-callback? value)
   (or (eq? value #f)
       (or (symbol? value)
-          (not (eq? value #t)))))
+	  (not (eq? value #t)))))
 
 (define (maybe-signal? sig)
   (or (eq? sig #f)
       (and (<= sig SIGRTMAX)
-           (>= sig RTMIN))))
+	   (>= sig RTMIN))))
+
+(define (block-position? pos)
+  (and (string? pos)
+       (list? (member pos '("left" "center" "right")))))
 
 ;; TODO: Document argument type for render and click procedures.
 (define-configuration
@@ -36,6 +41,9 @@
   (click
    (block-click-callback #f)
    "Block click callback procedure.")
+  (position
+   (block-position "right")
+   "Block position. Accepted values are 'left', 'center', and 'right'.")
   (signal
    (maybe-signal #f)
    "Signal used to trigger an update of a block. Must be between RTMIN and RTMAX, or #f.")

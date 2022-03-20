@@ -6,8 +6,8 @@
   #:use-module (dtao-guile configuration)
   #:use-module (dtao-guile configuration blocks)
   #:export (
-            dtao-config->alist
-            configuration->alist))
+	    dtao-config->alist
+	    configuration->alist))
 
 ;; Convert a render handler expression into a procedure sexp
 (define (render->exp proc)
@@ -35,16 +35,16 @@
    ;; Same goes for the modules. They are already imported once
    ;; the configuration is transformed.
    (lambda (pair) (let ((x (car pair)))
-                    (or (equal? x "%location")
-                        (equal? x "modules"))))
+		    (or (equal? x "%location")
+			(equal? x "modules"))))
    (fold-right
     (lambda (field acc)
       (append
        (let ((value ((record-accessor type field) config)))
-         `((,(remove-question-mark (symbol->string field))
-            . ,(if (not transform-value)
-                   value
-                   (transform-value field value source)))))
+	 `((,(remove-question-mark (symbol->string field))
+	    . ,(if (not transform-value)
+		   value
+		   (transform-value field value source)))))
        acc))
     '()
     (record-type-fields type))))

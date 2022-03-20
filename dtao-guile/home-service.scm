@@ -13,45 +13,48 @@
   #:use-module (dtao-guile configuration blocks)
   #:use-module (dtao-guile configuration transform)
   #:export (
-            home-dtao-guile-service-type
-            home-dtao-guile-configuration
-            home-dtao-guile-configuration?
-            <home-dtao-guile-configuration>
-            home-dtao-guile-configuration-package
-            home-dtao-guile-configuration-auto-start?
-            home-dtao-guile-configuration-config)
+	    home-dtao-guile-service-type
+	    home-dtao-guile-configuration
+	    home-dtao-guile-configuration?
+	    <home-dtao-guile-configuration>
+	    home-dtao-guile-configuration-package
+	    home-dtao-guile-configuration-auto-start?
+	    home-dtao-guile-configuration-config)
   #:re-export (
-               dtao-config
-               <dtao-config>
-               dtao-config?
-               dtao-config-left-blocks
-               dtao-config-right-blocks
-               dtao-config-center-blocks
-               dtao-config-modules
-               dtao-config-height
-               dtao-config-font
-               dtao-config-use-dwl-guile-colorscheme?
-               dtao-config-background-color
-               dtao-config-foreground-color
-               dtao-config-border-color
-               dtao-config-border-px
-               dtao-config-exclusive?
-               dtao-config-bottom?
-               dtao-config-padding-top
-               dtao-config-padding-bottom
-               dtao-config-padding-left
-               dtao-config-padding-right
-               dtao-config-adjust-width?
-               dtao-config-layer
+	       dtao-config
+	       <dtao-config>
+	       dtao-config?
+	       dtao-config-blocks
+	       dtao-config-modules
+	       dtao-config-height
+	       dtao-config-font
+	       dtao-config-use-dwl-guile-colorscheme?
+	       dtao-config-background-color
+	       dtao-config-foreground-color
+	       dtao-config-border-color
+	       dtao-config-border-px
+	       dtao-config-exclusive?
+	       dtao-config-bottom?
+	       dtao-config-padding-top
+	       dtao-config-padding-bottom
+	       dtao-config-padding-left
+	       dtao-config-padding-right
+	       dtao-config-adjust-width?
+	       dtao-config-layer
 
-               dtao-block
-               <dtao-block>
-               dtao-block?
-               dtao-block-events?
-               dtao-block-render
-               dtao-block-click
-               dtao-block-interval
-               dtao-block-signal))
+	       dtao-config-left-blocks
+	       dtao-config-center-blocks
+	       dtao-config-right-blocks
+
+	       dtao-block
+	       <dtao-block>
+	       dtao-block?
+	       dtao-block-events?
+	       dtao-block-position
+	       dtao-block-render
+	       dtao-block-click
+	       dtao-block-interval
+	       dtao-block-signal))
 
 ;; Home service configuration for dtao-guile.
 (define-configuration
@@ -74,19 +77,19 @@
 ;; Generate configuration file based on config in home.
 (define (home-dtao-guile-files-service config)
   (let* ((user-config (home-dtao-guile-configuration-config config))
-         (dtao (dtao-config->alist user-config))
-         (modules (dtao-config-modules user-config)))
+	 (dtao (dtao-config->alist user-config))
+	 (modules (dtao-config-modules user-config)))
     `(("config/dtao-guile/config.scm"
        ,(with-imported-modules
-         modules
-         (scheme-file
-          "dtao-config.scm"
-          ;; Not sure how to conditonally add (use-modules ...)
-          (if (> (length modules) 0)
-              #~(begin
-                  (use-modules #$@modules)
-                  (define config `(#$@dtao)))
-              #~(define config `(#$@dtao)))))))))
+	 modules
+	 (scheme-file
+	  "dtao-config.scm"
+	  ;; Not sure how to conditonally add (use-modules ...)
+	  (if (> (length modules) 0)
+	      #~(begin
+		  (use-modules #$@modules)
+		  (define config `(#$@dtao)))
+	      #~(define config `(#$@dtao)))))))))
 
 ;; Add shepherd serivce for starting dtao-guile.
 ;; TODO: Remove dependency on dwl-guile?
@@ -102,16 +105,37 @@
     (start
      (let ((config-dir (string-append (getenv "HOME") "/.config/dtao-guile")))
        #~(make-forkexec-constructor
-          (list
-           #$(file-append (home-dtao-guile-configuration-package config) "/bin/dtao-guile")
-           "-c" #$(string-append config-dir "/config.scm"))
-          #:user (getenv "USER")
-          #:log-file #$(string-append (or (getenv "XDG_LOG_HOME") (getenv "HOME"))
-                                      "/dtao-guile.log"))))
+	  (list
+	   #$(file-append (home-dtao-guile-configuration-package config) "/bin/dtao-guile")
+	   "-c" #$(string-append config-dir "/config.scm"))
+	  #:user (getenv "USER")
+	  #:log-file #$(string-append (or (getenv "XDG_LOG_HOME") (getenv "HOME"))
+				      "/dtao-guile.log"))))
     (stop #~(make-kill-destructor)))))
 
-(define (home-dtao-guile-extension old-config extend-proc)
-  (extend-proc old-config))
+(define (home-dtao-guile-extensions cfg extensions)
+  (define (positioned-at pos lst)
+    (filter (lambda (block) (equal? (dtao-block-position block) pos))
+	    lst))
+
+  (let* ((dtao (home-dtao-guile-configuration-config cfg))
+	 (unsorted-blocks (append (append-map identity (reverse extensions))
+				  (dtao-config-blocks dtao))))
+    (home-dtao-guile-configuration
+     (inherit cfg)
+     (config
+      (dtao-config
+       (inherit dtao)
+       (blocks '())
+       (left-blocks
+	(append (positioned-at "left" unsorted-blocks)
+		(dtao-config-left-blocks dtao)))
+       (center-blocks
+	(append (positioned-at "center" unsorted-blocks)
+		(dtao-config-center-blocks dtao)))
+       (right-blocks
+	(append (positioned-at "right" unsorted-blocks)
+		(dtao-config-right-blocks dtao))))))))
 
 (define home-dtao-guile-service-type
   (service-type
@@ -127,21 +151,7 @@
      (service-extension
       home-files-service-type
       home-dtao-guile-files-service)))
-   ;; Each extension will override the previous config
-   ;; with its own, generally by inheriting the old config
-   ;; and then adding their own updated values.
-   ;;
-   ;; Composing the extensions is done by creating a new procedure
-   ;; that accepts the service configuration and then recursively
-   ;; call each extension procedure with the result of the previous extension.
-   (compose (lambda (extensions)
-              (match extensions
-                (() identity)
-                ((procs ...)
-                 (lambda (old-config)
-                   (fold-right (lambda (p extended-config) (p extended-config))
-                               old-config
-                               extensions))))))
-   (extend home-dtao-guile-extension)
+   (compose identity)
+   (extend home-dtao-guile-extensions)
    (default-value (home-dtao-guile-configuration))
    (description "Configure and install dtao-guile statusbar for dwl-guile.")))
