@@ -13,48 +13,48 @@
   #:use-module (dtao-guile configuration blocks)
   #:use-module (dtao-guile configuration transform)
   #:export (
-	    home-dtao-guile-service-type
-	    home-dtao-guile-configuration
-	    home-dtao-guile-configuration?
-	    <home-dtao-guile-configuration>
-	    home-dtao-guile-configuration-package
-	    home-dtao-guile-configuration-auto-start?
-	    home-dtao-guile-configuration-config)
+            home-dtao-guile-service-type
+            home-dtao-guile-configuration
+            home-dtao-guile-configuration?
+            <home-dtao-guile-configuration>
+            home-dtao-guile-configuration-package
+            home-dtao-guile-configuration-auto-start?
+            home-dtao-guile-configuration-config)
   #:re-export (
-	       dtao-config
-	       <dtao-config>
-	       dtao-config?
-	       dtao-config-blocks
-	       dtao-config-modules
-	       dtao-config-height
-	       dtao-config-font
-	       dtao-config-use-dwl-guile-colorscheme?
-	       dtao-config-background-color
-	       dtao-config-foreground-color
-	       dtao-config-border-color
-	       dtao-config-border-px
-	       dtao-config-exclusive?
-	       dtao-config-bottom?
-	       dtao-config-padding-top
-	       dtao-config-padding-bottom
-	       dtao-config-padding-left
-	       dtao-config-padding-right
-	       dtao-config-adjust-width?
-	       dtao-config-layer
+               dtao-config
+               <dtao-config>
+               dtao-config?
+               dtao-config-blocks
+               dtao-config-modules
+               dtao-config-height
+               dtao-config-font
+               dtao-config-use-dwl-guile-colorscheme?
+               dtao-config-background-color
+               dtao-config-foreground-color
+               dtao-config-border-color
+               dtao-config-border-px
+               dtao-config-exclusive?
+               dtao-config-bottom?
+               dtao-config-padding-top
+               dtao-config-padding-bottom
+               dtao-config-padding-left
+               dtao-config-padding-right
+               dtao-config-adjust-width?
+               dtao-config-layer
 
-	       dtao-config-left-blocks
-	       dtao-config-center-blocks
-	       dtao-config-right-blocks
+               dtao-config-left-blocks
+               dtao-config-center-blocks
+               dtao-config-right-blocks
 
-	       dtao-block
-	       <dtao-block>
-	       dtao-block?
-	       dtao-block-events?
-	       dtao-block-position
-	       dtao-block-render
-	       dtao-block-click
-	       dtao-block-interval
-	       dtao-block-signal))
+               dtao-block
+               <dtao-block>
+               dtao-block?
+               dtao-block-events?
+               dtao-block-position
+               dtao-block-render
+               dtao-block-click
+               dtao-block-interval
+               dtao-block-signal))
 
 ;; Home service configuration for dtao-guile.
 (define-configuration
@@ -77,19 +77,19 @@
 ;; Generate configuration file based on config in home.
 (define (home-dtao-guile-files-service config)
   (let* ((user-config (home-dtao-guile-configuration-config config))
-	 (dtao (dtao-config->alist user-config))
-	 (modules (dtao-config-modules user-config)))
-    `(("config/dtao-guile/config.scm"
+         (dtao (dtao-config->alist user-config))
+         (modules (dtao-config-modules user-config)))
+    `((".config/dtao-guile/config.scm"
        ,(with-imported-modules
-	 modules
-	 (scheme-file
-	  "dtao-config.scm"
-	  ;; Not sure how to conditonally add (use-modules ...)
-	  (if (> (length modules) 0)
-	      #~(begin
-		  (use-modules #$@modules)
-		  (define config `(#$@dtao)))
-	      #~(define config `(#$@dtao)))))))))
+         modules
+         (scheme-file
+          "dtao-config.scm"
+          ;; Not sure how to conditonally add (use-modules ...)
+          (if (> (length modules) 0)
+              #~(begin
+                  (use-modules #$@modules)
+                  (define config `(#$@dtao)))
+              #~(define config `(#$@dtao)))))))))
 
 ;; Add shepherd serivce for starting dtao-guile.
 ;; TODO: Remove dependency on dwl-guile?
@@ -105,22 +105,22 @@
     (start
      (let ((config-dir (string-append (getenv "HOME") "/.config/dtao-guile")))
        #~(make-forkexec-constructor
-	  (list
-	   #$(file-append (home-dtao-guile-configuration-package config) "/bin/dtao-guile")
-	   "-c" #$(string-append config-dir "/config.scm"))
-	  #:user (getenv "USER")
-	  #:log-file #$(string-append (or (getenv "XDG_LOG_HOME") (getenv "HOME"))
-				      "/dtao-guile.log"))))
+          (list
+           #$(file-append (home-dtao-guile-configuration-package config) "/bin/dtao-guile")
+           "-c" #$(string-append config-dir "/config.scm"))
+          #:user (getenv "USER")
+          #:log-file #$(string-append (or (getenv "XDG_LOG_HOME") (getenv "HOME"))
+                                      "/dtao-guile.log"))))
     (stop #~(make-kill-destructor)))))
 
 (define (home-dtao-guile-extensions cfg extensions)
   (define (positioned-at pos lst)
     (filter (lambda (block) (equal? (dtao-block-position block) pos))
-	    lst))
+            lst))
 
   (let* ((dtao (home-dtao-guile-configuration-config cfg))
-	 (unsorted-blocks (append (append-map identity (reverse extensions))
-				  (dtao-config-blocks dtao))))
+         (unsorted-blocks (append (append-map identity (reverse extensions))
+                                  (dtao-config-blocks dtao))))
     (home-dtao-guile-configuration
      (inherit cfg)
      (config
@@ -128,14 +128,14 @@
        (inherit dtao)
        (blocks '())
        (left-blocks
-	(append (positioned-at "left" unsorted-blocks)
-		(dtao-config-left-blocks dtao)))
+        (append (positioned-at "left" unsorted-blocks)
+                (dtao-config-left-blocks dtao)))
        (center-blocks
-	(append (positioned-at "center" unsorted-blocks)
-		(dtao-config-center-blocks dtao)))
+        (append (positioned-at "center" unsorted-blocks)
+                (dtao-config-center-blocks dtao)))
        (right-blocks
-	(append (positioned-at "right" unsorted-blocks)
-		(dtao-config-right-blocks dtao))))))))
+        (append (positioned-at "right" unsorted-blocks)
+                (dtao-config-right-blocks dtao))))))))
 
 (define home-dtao-guile-service-type
   (service-type
