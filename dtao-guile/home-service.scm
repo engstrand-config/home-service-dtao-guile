@@ -91,6 +91,10 @@
                   (define config `(#$@dtao)))
               #~(define config `(#$@dtao)))))))))
 
+(define (home-dtao-guile-on-change-service config)
+  `(("files/.config/dtao-guile/config.scm"
+     ,#~(system* #$(file-append shepherd "/bin/herd") "restart" "dtao-guile"))))
+
 ;; Add shepherd serivce for starting dtao-guile.
 ;; TODO: Remove dependency on dwl-guile?
 (define (home-dtao-guile-shepherd-service config)
@@ -150,7 +154,10 @@
       home-dtao-guile-shepherd-service)
      (service-extension
       home-files-service-type
-      home-dtao-guile-files-service)))
+      home-dtao-guile-files-service)
+     (service-extension
+      home-run-on-change-service-type
+      home-dtao-guile-on-change-service)))
    (compose identity)
    (extend home-dtao-guile-extensions)
    (default-value (home-dtao-guile-configuration))
