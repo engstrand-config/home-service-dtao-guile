@@ -80,16 +80,14 @@
          (dtao (dtao-config->alist user-config))
          (modules (dtao-config-modules user-config)))
     `((".config/dtao-guile/config.scm"
-       ,(with-imported-modules
-         modules
-         (scheme-file
-          "dtao-config.scm"
-          ;; Not sure how to conditonally add (use-modules ...)
-          (if (> (length modules) 0)
-              #~(begin
-                  (use-modules #$@modules)
-                  (define config `(#$@dtao)))
-              #~(define config `(#$@dtao)))))))))
+       ,(scheme-file
+         "dtao-config.scm"
+         ;; Not sure how to conditonally add (use-modules ...)
+         (if (> (length modules) 0)
+             #~(begin
+                 (use-modules #$@modules)
+                 (define config `(#$@dtao)))
+             #~(define config `(#$@dtao))))))))
 
 (define (home-dtao-guile-on-change-service config)
   `(("files/.config/dtao-guile/config.scm"
