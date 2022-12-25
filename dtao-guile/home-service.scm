@@ -28,7 +28,6 @@
                dtao-config-modules
                dtao-config-height
                dtao-config-font
-               dtao-config-use-dwl-guile-colorscheme?
                dtao-config-background-color
                dtao-config-foreground-color
                dtao-config-border-color

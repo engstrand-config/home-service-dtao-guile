@@ -1,31 +1,30 @@
 (define-module (dtao-guile configuration)
-	       #:use-module (gnu services configuration)
-	       #:use-module (dtao-guile utils)
-	       #:use-module (dtao-guile configuration blocks)
-	       #:export (
-			 dtao-config
-			 <dtao-config>
-			 dtao-config?
-			 dtao-config-blocks
-			 dtao-config-left-blocks
-			 dtao-config-center-blocks
-			 dtao-config-right-blocks
-			 dtao-config-modules
-			 dtao-config-height
-			 dtao-config-font
-			 dtao-config-use-dwl-guile-colorscheme?
-			 dtao-config-background-color
-			 dtao-config-foreground-color
-			 dtao-config-border-color
-			 dtao-config-border-px
-			 dtao-config-exclusive?
-			 dtao-config-bottom?
-			 dtao-config-padding-top
-			 dtao-config-padding-bottom
-			 dtao-config-padding-left
-			 dtao-config-padding-right
-			 dtao-config-adjust-width?
-			 dtao-config-layer))
+               #:use-module (gnu services configuration)
+               #:use-module (dtao-guile utils)
+               #:use-module (dtao-guile configuration blocks)
+               #:export (
+                         dtao-config
+                         <dtao-config>
+                         dtao-config?
+                         dtao-config-blocks
+                         dtao-config-left-blocks
+                         dtao-config-center-blocks
+                         dtao-config-right-blocks
+                         dtao-config-modules
+                         dtao-config-height
+                         dtao-config-font
+                         dtao-config-background-color
+                         dtao-config-foreground-color
+                         dtao-config-border-color
+                         dtao-config-border-px
+                         dtao-config-exclusive?
+                         dtao-config-bottom?
+                         dtao-config-padding-top
+                         dtao-config-padding-bottom
+                         dtao-config-padding-left
+                         dtao-config-padding-right
+                         dtao-config-adjust-width?
+                         dtao-config-layer))
 
 (define-configuration
   dtao-config
@@ -52,10 +51,6 @@ based on the 'position' field. Primarily used by service extensions.")
   (font
    (string "monospace:style=bold:size=12")
    "The font to use in the statusbar, e.g. 'JetBrains Mono:style=bold:size=12'")
-  (use-dwl-guile-colorscheme?
-   (boolean #f)
-   "Use the same colorscheme as dwl-guile. Uses the root, border, and text color.
-It will dynamically receive updated colors via the dscm wayland protocol.")
   (background-color
    (string "111111AA")
    "Background color of the bar in RRGGBBAA format.")
