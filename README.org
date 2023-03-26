@@ -38,8 +38,8 @@ Enable =home-service-dtao-guile= by adding it to your list of home services.
 (use-modules (dtao-guile home-service))
 
 ;; Create and add the dtao-guile home service to your home configuration.
-(service home-dwl-guile-service-type
-         (home-dwl-guile-configuration
+(service home-dtao-guile-service-type
+         (home-dtao-guile-configuration
           ;; Optionally use a custom dtao-guile package.
           (package my-custom-dtao-guile)
           ;; Start dtao-guile on login, defaults to true.
