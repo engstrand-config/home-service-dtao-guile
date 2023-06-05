@@ -24,6 +24,10 @@
                          dtao-config-padding-left
                          dtao-config-padding-right
                          dtao-config-adjust-width?
+                         dtao-config-delimiter-left
+                         dtao-config-delimiter-center
+                         dtao-config-delimiter-right
+                         dtao-config-block-spacing
                          dtao-config-layer))
 
 (define-configuration
@@ -85,9 +89,15 @@ based on the 'position' field. Primarily used by service extensions.")
   (adjust-width?
    (boolean #f)
    "Adjusts the total width of the bar to the width of its contents.")
-  (delimiter
+  (delimiter-left
    (maybe-string #f)
-   "Single character delimiter between each block, both in title and sub-window.")
+   "Single character delimiter between each block on the left side.")
+  (delimiter-center
+   (maybe-string #f)
+   "Single character delimiter between each center block.")
+  (delimiter-right
+   (maybe-string #f)
+   "Single character delimiter between each block on the right side.")
   (block-spacing
    (maybe-number #f)
    "Additional spacing on each side of the delimiter between each block (in pixels).")
